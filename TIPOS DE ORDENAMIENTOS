@@ -1,0 +1,29 @@
+int estado = 0; // 0 = Menú, 1 = Simulación
+Menu menu;
+Simulacion simulacion;
+
+void setup() {
+  size(800, 600);
+  menu = new Menu();
+  simulacion = new Simulacion();
+  menu.cargarFuente(); // Carga la fuente personalizada
+}
+
+void draw() {
+  background(240);
+
+  if (estado == 0) {
+    menu.mostrar();
+  } else if (estado == 1) {
+    simulacion.mostrar();
+    simulacion.actualizar();
+  }
+}
+
+void mousePressed() {
+  if (estado == 0) {
+    menu.gestionarRaton();
+  } else if (estado == 1) {
+    simulacion.gestionarRaton();
+  }
+}
