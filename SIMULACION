@@ -1,0 +1,135 @@
+class Simulacion {
+  int[] arreglo;
+  color[] c;
+  int i, j;
+  boolean ordenando = false;
+  String algoritmo = "Burbuja";
+  int velocidad = 300; // Milisegundos de retraso
+  int velocidadContador = 0;
+
+  void iniciar(int tamanoArreglo, String algoritmoSeleccionado, int velocidadSeleccionada) {
+    arreglo = new int[tamanoArreglo];
+    c = new color[tamanoArreglo];
+    for (int k = 0; k < tamanoArreglo; k++) {
+      arreglo[k] = int(random(height));
+      c[k] = color(random(255), random(255), random(255));
+    }
+    i = 0;
+    j = 0;
+    ordenando = false;
+    algoritmo = algoritmoSeleccionado;
+    velocidad = velocidadSeleccionada;
+  }
+
+  void mostrar() {
+    for (int k = 0; k < arreglo.length; k++) {
+      fill(c[k]);
+      rect(k * (width / arreglo.length), height - arreglo[k], width / arreglo.length - 2, arreglo[k]);
+    }
+  }
+
+  void actualizar() {
+    velocidadContador++;
+    if (ordenando && velocidadContador >= velocidad / (1000 / 60)) { // Ajustar velocidad según framerate
+      switch (algoritmo) {
+        case "Burbuja": pasoBurbuja(); break;
+        case "Selección": pasoSeleccion(); break;
+        case "Inserción": pasoInsercion(); break;
+        case "Quicksort": quickSort(arreglo, 0, arreglo.length - 1); ordenando = false; break;
+      }
+      velocidadContador = 0;
+    }
+  }
+
+  void gestionarRaton() {
+    if (!ordenando) {
+      ordenando = true;
+    }
+  }
+
+  void pasoBurbuja() {
+    if (i < arreglo.length - 1) {
+        if (j < arreglo.length - i - 1) {
+            if (arreglo[j] > arreglo[j + 1]) {
+                int temp = arreglo[j];
+                arreglo[j] = arreglo[j + 1];
+                arreglo[j + 1] = temp;
+                color tempColor = c[j];
+                c[j] = c[j + 1];
+                c[j + 1] = tempColor;
+            }
+            j++;
+        } else {
+            j = 0;
+            i++;
+        }
+    } else {
+        ordenando = false;
+    }
+}
+
+
+ void pasoSeleccion() {
+    if (i < arreglo.length - 1) {
+        int indiceMinimo = i;
+        for (j = i + 1; j < arreglo.length; j++) {
+            if (arreglo[j] < arreglo[indiceMinimo]) {
+                indiceMinimo = j;
+            }
+        }
+        int temp = arreglo[i];
+        arreglo[i] = arreglo[indiceMinimo];
+        arreglo[indiceMinimo] = temp;
+        color tempColor = c[i];
+        c[i] = c[indiceMinimo];
+        c[indiceMinimo] = tempColor;
+        
+        i++;
+    } else {
+        ordenando = false;
+    }
+}
+
+  void pasoInsercion() {
+    if (i < arreglo.length) {
+        int clave = arreglo[i];
+        color claveColor = c[i]; 
+        j = i - 1;
+        while (j >= 0 && arreglo[j] > clave) {
+            arreglo[j + 1] = arreglo[j];
+            c[j + 1] = c[j]; 
+            j--;
+        }
+        arreglo[j + 1] = clave;
+        c[j + 1] = claveColor; 
+        i++;
+    } else {
+        ordenando = false;
+    }
+}
+
+void quickSort(int[] arreglo, int bajo, int alto) {
+    if (bajo < alto) {
+        int pivote = dividir(arreglo, bajo, alto);
+        quickSort(arreglo, bajo, pivote - 1);
+        quickSort(arreglo, pivote + 1, alto);
+    }}
+int dividir(int[] arreglo, int bajo, int alto) {
+    int pivote = arreglo[alto]; 
+    int i = bajo - 1;
+    for (int j = bajo; j < alto; j++) {
+        if (arreglo[j] <= pivote) {
+            i++;
+            int temp = arreglo[i];
+            arreglo[i] = arreglo[j];
+            arreglo[j] = temp;
+            color tempColor = c[i];
+            c[i] = c[j];
+            c[j] = tempColor;}}
+    int temp = arreglo[i + 1];
+    arreglo[i + 1] = arreglo[alto];
+    arreglo[alto] = temp;
+    color tempColor = c[i + 1];
+    c[i + 1] = c[alto];
+    c[alto] = tempColor;
+    return i + 1;}}
