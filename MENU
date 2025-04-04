@@ -1,0 +1,57 @@
+PFont fuente;
+
+class Menu {
+  int botonInicioX = 275, botonInicioY = 500, botonInicioAncho = 250, botonInicioAlto = 50;
+  int botonVelocidadX = 300, botonVelocidadY = 400, botonVelocidadAncho = 200, botonVelocidadAlto = 50;
+  String algoritmo = "Burbuja";
+  int tamanoArreglo = 10;
+  int velocidad = 300;
+
+  void cargarFuente() {
+    fuente = createFont("Arial Bold", 20);
+    textFont(fuente);
+  }
+
+  void mostrar() {
+    textAlign(CENTER, CENTER);
+    fill(lerpColor(color(100, 150, 255), color(200, 200, 255), 0.5));
+    rect(width / 2 - 100, height / 2 - 60, 200, 40, 10); // Botón tamaño
+    rect(width / 2 - 125, height / 2 + 20, 250, 40, 10); // Botón algoritm
+
+    fill(0);
+    text("Tamaño: " + tamanoArreglo, width / 2, height / 2 - 40);
+    text("Algoritmo: " + algoritmo, width / 2, height / 2 + 40);
+
+    // Botón de velocidad
+    fill(lerpColor(color(150, 100, 255), color(100, 200, 150), map(mouseX, botonVelocidadX, botonVelocidadX + botonVelocidadAncho, 0, 1)));
+    rect(botonVelocidadX, botonVelocidadY, botonVelocidadAncho, botonVelocidadAlto, 15);
+    fill(0);
+    text("Velocidad: " + velocidad + "ms", botonVelocidadX + botonVelocidadAncho / 2, botonVelocidadY + botonVelocidadAlto / 2);
+
+    // Botón de inicio
+    fill(lerpColor(color(100, 200, 100), color(150, 250, 150), constrain(map(mouseX, botonInicioX, botonInicioX + botonInicioAncho, 0, 1), 0, 1)));
+    rect(botonInicioX, botonInicioY, botonInicioAncho, botonInicioAlto, 20);
+    fill(0);
+    text("Comenzar Simulación", botonInicioX + botonInicioAncho / 2, botonInicioY + botonInicioAlto / 2);
+  }
+
+  void gestionarRaton() {
+    if (mouseY > height / 2 - 60 && mouseY < height / 2 - 20) { // Cambiar tamaño
+      tamanoArreglo = (tamanoArreglo % 50) + 10;
+    } else if (mouseY > height / 2 + 20 && mouseY < height / 2 + 60) { // Cambiar algoritmo
+      switch (algoritmo) {
+        case "Burbuja": algoritmo = "Selección"; break;
+        case "Selección": algoritmo = "Inserción"; break;
+        case "Inserción": algoritmo = "Quicksort"; break;
+        default: algoritmo = "Burbuja"; break;
+      }
+    } else if (mouseX > botonVelocidadX && mouseX < botonVelocidadX + botonVelocidadAncho &&
+               mouseY > botonVelocidadY && mouseY < botonVelocidadY + botonVelocidadAlto) { // Cambiar velocidad
+      velocidad = (velocidad % 1000) + 100;
+    } else if (mouseX > botonInicioX && mouseX < botonInicioX + botonInicioAncho &&
+               mouseY > botonInicioY && mouseY < botonInicioY + botonInicioAlto) {
+      estado = 1;
+      simulacion.iniciar(tamanoArreglo, algoritmo, velocidad);
+    }
+  }
+}
